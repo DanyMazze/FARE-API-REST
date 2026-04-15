@@ -1,3 +1,15 @@
+/**
+ * Esempio di elemento:
+ * {
+    "id": 1,
+    "titolo": "Il Nome della Rosa",
+    "autore": "Umberto Eco",
+    "anno": 1980,
+    "genere": "Storico",
+    "letto": false,
+    "voto": null
+} */
+
 const express = require("express");
 const router = express.Router();
 const { items } = require("../data/db");
@@ -30,15 +42,20 @@ router.post("/", (req, res) => {
     // - prendere i dati dal body
     // - creare un nuovo oggetto
     // - assegnare un ID
-    const { name, description } = req.body;
+    const { titolo, autore, anno, genere, letto, voto } = req.body;
     const newItem = {
     id: items.length > 0 ? Math.max(...items.map(i => i.id)) + 1 : 1,
-    name,
-    description
+    titolo,
+    autore,
+    anno,
+    genere,
+    letto,
+    voto
     };
     items.push(newItem);
     res.json({
-    message: "Elemento creato con successo"
+        success: true,
+        message: "Elemento creato con successo"
     });
 });
 /**
@@ -54,9 +71,11 @@ router.put("/:id", (req, res) => {
     if (itemIndex === -1) {
         return res.status(404).json({ message: "Elemento non trovato" });
     }
-    items.splice(itemIndex, 1);
+    const { titolo, autore, anno, genere, letto, voto } = req.body;
+    items[itemIndex] = { ...items[itemIndex], titolo, autore, anno, genere, letto, voto };
     res.json({
-    message: "elemento modificato con successo"
+        success: true,
+        message: "elemento modificato con successo"
     });
 });
 /**
@@ -75,7 +94,8 @@ router.delete("/:id", (req, res) => {
     }
     items.splice(itemIndex, 1);
     res.json({
-    message: "Elemento eliminato con successo"
+        success: true,
+        message: "Elemento eliminato con successo"
     });
 });
 module.exports = router;
